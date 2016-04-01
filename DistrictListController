@@ -1,0 +1,128 @@
+package com.slight.controller.district;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+
+import com.primeface.bean.Car;
+import com.primeface.service.CarService;
+import com.slight.bean.District;
+import com.slight.bean.District;
+import com.slight.dao.DistrictDaoImpl;
+import com.slight.services.DistrictService;
+ 
+@ManagedBean(name = "districtListController", eager = true)
+@ViewScoped
+public class DistrictListController implements Serializable{
+
+    // =========================================================================
+    // consts
+    // =====================
+    private static final long serialVersionUID = 1L;
+    
+    private String city; 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    private String District;  
+    private Map<String,String> cities;
+    public List<District> districts;
+    public District item;
+    //item District
+    public District getItem() {
+        return item;
+    }
+
+    public void setItem(District item) {
+        this.item = item;
+    }
+    
+
+ 
+    public String getDistrict() {
+        return District;
+    }
+ 
+    public void setDistrict(String District) {
+        this.District = District;
+    }
+
+ 
+    public Map<String, String> getCitys() {
+        return cities;
+    }
+ 
+    
+    public List<District> getdistricts() {
+        return districts;
+    }
+
+ 
+    public void setService(DistrictService service) {
+        this.service = service;
+    }
+    
+    @ManagedProperty("#{districtService}")
+    private DistrictService service;
+    
+    @PostConstruct
+    public void init() {
+        
+        districts = service.getdistrictList();
+        try {
+            cities = service.getComboxListCity();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+ 
+    }
+    // =========================================================================
+    // Execute Method
+    // =====================
+    
+    public String list(){
+
+        return "/district/list.xhtml";
+     }
+    
+     public String delete(){
+        
+   
+    	 FacesContext fc = FacesContext.getCurrentInstance();
+         Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+         String id1 = params.get("id");
+         service.deleteData(id1);
+
+        return "list";
+     }
+     public void onCityChange() {
+         if(city !=null && !city.equals(""))
+             districts = service.getdistrictListByCity(city);
+         else
+             districts = service.getdistrictList();
+     }
+     // =========================================================================
+     // Validation Method
+     // =====================
+
+     // =========================================================================
+     // Sub Method
+     // =====================
+}
