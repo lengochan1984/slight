@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+    <head>
+       <ui:include src="/WEB-INF/view/head.xhtml" />
+    </head>
+	<h:body>
+        <div class="PC">
+			<ui:include src="/WEB-INF/view/category_left.xhtml" />
+            <div id="CONTENTSIDE">
+                <div id="CONTENTSIDEindent">
+
+                    <!-- header bar start-->
+                    <div class="ContentSideSections" id="PFTopLinksCover" style="height:60px;">
+                        <a id="LOGOTEXTSIDE" href="/">
+                            <span class="dispBlock logoDarkText fontSize30">Slight</span>
+                            <span class="dispBlock logoBlueText fontSize30 mediumFont">LIST DISTRICT</span>
+                        </a>
+
+                        
+                    </div>
+                    <!-- header bar end-->
+
+                    <div id="widgetdemo">
+
+                        <div class="ContentSideSections overHidden PFLayouts">
+                        	<!-- content  start-->
+                            <h:form>
+							<p:panel header="Validate">
+							<p:messages autoUpdate="true"/>
+					 
+							<h:panelGrid id="grid" columns="3" cellpadding="5">
+								<h:outputLabel for="name" value="Name:" style="font-weight:bold"/>                    
+								<p:inputText id="name" value="#{districtEditController.name}" required="true" label="Name"/>
+								<p:message for="name" style="color:red" />
+							   
+								<h:outputLabel for="desc" value="Description" style="font-weight:bold"/>
+								<p:inputTextarea id="desc" value="#{districtEditController.description}" required="true" label="Description">
+									<f:validateLength minimum="3" maximum="100" /> 
+								</p:inputTextarea>
+								<p:message for="desc" style="color:red" />
+								
+							</h:panelGrid>
+							<h:commandButton value="Save" ajax="false" icon="ui-icon-check" action="#{districtEditController.doSaveEdit}" validateClient="true"></h:commandButton>
+							
+						</p:panel>
+						</h:form>
+							<!-- content  end -->
+                        </div>
+
+                        
+                    </div>
+
+
+                    <!-- footer start-->
+                    <ui:include src="/WEB-INF/view/footer.xhtml" />
+                    
+                    <!-- footer end-->
+
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript" src="../showcase/resources/js/sh.js"></script>
+    </h:body>
+</html>
