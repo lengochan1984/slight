@@ -1,0 +1,118 @@
+package com.slight.controller.district;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Map;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import com.slight.bean.District;
+import com.slight.services.DistrictService;
+ 
+@ManagedBean(name = "districtEditController", eager = true)
+@RequestScoped
+public class DistrictEditController implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+    
+    
+    @ManagedProperty("#{districtService}")
+    private DistrictService service;
+    
+    private String districtCd;
+    private String name;
+    private String description;
+    
+    public String getdistrictCd() {
+        return districtCd;
+    }
+
+    public void setdistrictCd(String districtCd) {
+        this.districtCd = districtCd;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+   
+    public String edit(){
+        
+       
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+        String id1 = params.get("id");
+        District district = service.getdistrict(id1);
+        districtCd = district.getDistrictCd();
+        name = district.getName();
+        description = district.getDescription();
+        
+        return "/district/edit.xhtml";
+     }
+    public String add(){
+        
+        return "/district/add.xhtml";
+     }
+    public String doSaveEdit(){
+        
+        String value = FacesContext.getCurrentInstance().
+               getExternalContext().getRequestParameterMap().get("hidden1");
+        District district = new District();
+        if (value != null) {
+           //Update
+            try {
+               
+                district.setDistrictCd(value);
+                district.setName(name);
+                district.setDescription(description);
+                service.updateData(district);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println("Update");
+        }else {
+            try {
+                district.setName(name);
+                district.setDescription(description);
+                service.insertData(district);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println("New");
+        }
+       
+        return "/district/list.xhtml?faces-redirect=true";
+     }
+     public String delete(){
+        
+         
+         FacesContext fc = FacesContext.getCurrentInstance();
+         Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+         String id1 = params.get("Id");
+         System.out.println(id1);
+         
+        return "list";
+     }
+
+ 
+    public void setService(DistrictService service) {
+        this.service = service;
+    }
+}
