@@ -1,0 +1,129 @@
+package com.slight.controller.city;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+
+import com.primeface.bean.Car;
+import com.primeface.service.CarService;
+import com.slight.bean.City;
+import com.slight.dao.CityDaoImpl;
+import com.slight.services.CityService;
+ 
+@ManagedBean(name = "cityEditController", eager = true)
+@RequestScoped
+public class CityEditController implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+    
+    
+    @ManagedProperty("#{cityService}")
+    private CityService service;
+    
+    private String cityCd;
+    private String name;
+    private String description;
+    
+    public String getCityCd() {
+        return cityCd;
+    }
+
+    public void setCityCd(String cityCd) {
+        this.cityCd = cityCd;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+   
+    public String edit(){
+        
+       
+        FacesContext fc = FacesContext.getCurrentInstance();
+        Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+        String id1 = params.get("id");
+        City city = service.getCity(id1);
+        cityCd = city.getCityCd();
+        name = city.getName();
+        description = city.getDescription();
+        
+        return "/city/edit.xhtml";
+     }
+    public String add(){
+        
+        return "/city/add.xhtml";
+     }
+    public String doSaveEdit(){
+        
+        String value = FacesContext.getCurrentInstance().
+               getExternalContext().getRequestParameterMap().get("hidden1");
+        City city = new City();
+        if (value != null) {
+           //Update
+            try {
+               
+                city.setCityCd(value);
+                city.setName(name);
+                city.setDescription(description);
+                service.updateData(city);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println("Update");
+        }else {
+            try {
+                city.setName(name);
+                city.setDescription(description);
+                service.insertData(city);
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println("New");
+        }
+       
+        return "/city/list.xhtml?faces-redirect=true";
+     }
+     public String delete(){
+        
+         
+         FacesContext fc = FacesContext.getCurrentInstance();
+         Map<String,String> params = fc.getExternalContext().getRequestParameterMap();
+         String id1 = params.get("Id");
+         System.out.println(id1);
+         
+        return "list";
+     }
+
+ 
+    public void setService(CityService service) {
+        this.service = service;
+    }
+}
