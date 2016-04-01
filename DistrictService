@@ -1,0 +1,63 @@
+package com.slight.services;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+
+import com.slight.bean.District;
+import com.slight.dao.DistrictDao;
+import com.slight.dao.DistrictDaoImpl;
+import com.slight.util.DbUtil;
+
+@ManagedBean(name = "districtService")
+@ApplicationScoped
+public class DistrictService {
+
+    private DistrictDao districtDao;
+    
+    public DistrictDao getdistrictDao() {
+		return districtDao;
+	}
+	public void setdistrictDao(DistrictDao districtDao) {
+		this.districtDao = districtDao;
+	}
+	public DistrictService() {
+
+		districtDao = new DistrictDaoImpl();
+
+    }
+	public void updateData(District district) throws SQLException {
+
+        districtDao.updateData(district);
+    }
+    public int insertData(District district) throws SQLException{
+        return districtDao.insertData(district);
+    }
+    public List<District> getdistrictList(){
+    	
+        return districtDao.getdistrictList();
+    }
+   
+    public List<District> getdistrictListByCity(String id){
+        
+        return districtDao.getdistrictListByCity(id);
+    }
+    public void updateDataTest(District district) throws SQLException{
+        districtDao.updateDataTest(district);
+    }
+    public void deleteData(String id){
+        districtDao.deleteData(id);
+    }
+    public District getdistrict(String id){
+        return districtDao.getdistrict(id);
+    }
+    public int getCountdistrict(String id) throws SQLException{
+        return districtDao.getCountdistrict(id);
+    }
+    public Map<String,String> getComboxListCity() throws SQLException{
+        return districtDao.getComboxListCity();
+    }
+}
