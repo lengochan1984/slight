@@ -1,0 +1,19 @@
+package com.slight.dao;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import com.slight.bean.District;
+
+public interface DistrictDao {
+        public int insertData(District district) throws SQLException;
+        public List<District> getdistrictList();
+        public void updateData(District user) throws SQLException;
+        public void updateDataTest(District user) throws SQLException;
+        public void deleteData(String id);
+        public District getdistrict(String id);
+        public int getCountdistrict(String id) throws SQLException;
+        public Map<String,String> getComboxListCity() throws SQLException;
+        public List<District> getdistrictListByCity(String id);
+
+}
