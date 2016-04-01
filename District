@@ -1,0 +1,67 @@
+package com.slight.bean;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+ 
+@ManagedBean
+public class District {
+
+    private String districtCd;
+    private String cityCd;
+    private String nameCity;
+    public String getNameCity() {
+        return nameCity;
+    }
+
+
+    public void setNameCity(String nameCity) {
+        this.nameCity = nameCity;
+    }
+
+
+    public String getDistrictCd() {
+        return districtCd;
+    }
+
+
+    public void setDistrictCd(String districtCd) {
+        this.districtCd = districtCd;
+    }
+
+    private String name;
+    private String description;
+    
+    public String getCityCd() {
+        return cityCd;
+    }
+
+
+    public void setCityCd(String cityCd) {
+        this.cityCd = cityCd;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void save() {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage("Welcome " + name + " " + description));
+    }
+}
