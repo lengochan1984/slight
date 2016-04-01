@@ -1,0 +1,304 @@
+/*
+ * create or replace function usercheck1
+(uname varchar2, upass varchar2)
+return number
+as 
+numb number;
+begin
+select (employe_id) into numb from record where name=uname and password=upass;
+return numb;
+end usercheck1;
+
+select usercheck1 ('ghg','aa')from dual;
+ * 
+ * 
+ */
+package com.slight.dao;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+
+import com.slight.bean.District;
+import com.slight.util.DbUtil;
+
+
+public class DistrictDaoImpl implements DistrictDao {
+
+    private Connection connection;
+    
+    private static final String SQL_SEL_COUNT_district = new StringBuffer()
+    .append("SELECT ")
+    .append(    "count(cty.districtCd) as SL ")
+    .append("FROM ")
+    .append(    "district cty ")
+    .append("WHERE ")
+    .append(    "cty.districtCd = ?")
+    .toString();
+    
+    private static final String SQL_SEL__district = new StringBuffer()
+    .append("SELECT ")
+    .append(    "district.name as nameDistrict, district.description as descriptionDistrict,district.districtCd, ")
+    .append(    "city.name as nameCity,city.cityCd ")
+    .append("FROM  ")
+    .append(    "district ")
+    .append(    "INNER JOIN city ")
+    .append(    "ON district.cityCd = city.cityCd ")
+    .toString();
+    
+    private static final String SQL_SEL__district_byCity = new StringBuffer()
+    .append("SELECT ")
+    .append(    "district.name as nameDistrict, district.description as descriptionDistrict,district.districtCd, ")
+    .append(    "city.name as nameCity,city.cityCd ")
+    .append("FROM  ")
+    .append(    "district ")
+    .append(    "INNER JOIN city ")
+    .append(    "ON district.cityCd = city.cityCd ")
+    .append("WHERE ")
+    .append(    "district.cityCd = ?")
+    .toString();
+   
+    
+    protected final static String SQLSTR1 =
+            " SELECT * FROM district cty where cty.districtCd = ?";
+    
+    public DistrictDaoImpl() {
+
+        connection = DbUtil.getConnection();
+
+    }
+    public int insertData(District district) throws SQLException {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("insert into district(name,description) values (?, ? )");
+            pstmt.setString(1, district.getName());
+            pstmt.setString(2, district.getDescription());
+            
+            return pstmt.executeUpdate();
+        } finally {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        }
+    }
+
+    public List<District> getdistrictList() {
+        List<District> districts = new ArrayList<District>();
+
+        try {
+        	
+		
+			//connection = DbUtil.getConnection();
+        	
+            Statement statement = connection.createStatement();
+
+            ResultSet rs = statement.executeQuery(SQL_SEL__district);
+
+            while (rs.next()) {
+
+                District district = new District();
+
+                district.setDistrictCd(String.valueOf(rs.getInt("districtCd")));
+
+                district.setName(rs.getString("name"));
+
+                district.setNameCity(rs.getString("nameCity"));
+
+                districts.add(district);
+
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+        return districts;
+    }
+    
+        public List<District> getdistrictListByCity(String id) {
+            List<District> districts = new ArrayList<District>();
+
+            try {
+                
+            
+                //connection = DbUtil.getConnection();
+                
+                PreparedStatement statement = connection.prepareStatement(SQL_SEL__district_byCity);
+
+                statement.setString( 1, id);
+                
+                ResultSet rs = statement.executeQuery();
+
+                while (rs.next()) {
+
+                    District district = new District();
+
+                    district.setDistrictCd(String.valueOf(rs.getInt("districtCd")));
+
+                    district.setName(rs.getString("name"));
+
+                    district.setNameCity(rs.getString("nameCity"));
+
+                    districts.add(district);
+
+                }
+
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+
+            }
+           
+        return districts;
+    }
+
+    @Override
+    public void deleteData(String id) {
+    
+        try {
+
+            PreparedStatement pstmt = connection
+
+                    .prepareStatement("delete from district where districtCd=?");
+
+            // Parameters start with 1
+
+            pstmt.setInt(1, Integer.parseInt(id));
+
+            pstmt.executeUpdate();
+
+
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+
+    @Override
+    public void updateData(District district) throws SQLException {
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("update  district set name=? , description=? where districtCd=?");
+            pstmt.setString(1, district.getName());
+            pstmt.setString(2, district.getDescription());
+            pstmt.setString(3, district.getDistrictCd());
+            
+            pstmt.executeUpdate();
+        } finally {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+        }
+        
+    }
+
+    public void updateDataTest(District district) throws SQLException {
+
+        CallableStatement pstat = null;
+        try {
+            pstat=connection.prepareCall ("{? = call usercheck1(?, ?)}");
+
+            pstat.registerOutParameter (1, Types.VARCHAR);
+            pstat.setString(2,"abc");       
+            pstat.setString(3,"abc");
+            pstat.execute(); 
+            String output =pstat.getString (1);
+            
+        } finally {
+            if (pstat != null) {
+                pstat.close();
+            }
+        }
+        
+    }
+
+    @Override
+    public District getdistrict(String id) {
+     
+     PreparedStatement pstmt = null;
+
+     ResultSet rs = null;
+
+     District district = new District();
+
+     try{
+
+         pstmt = connection.prepareStatement(SQLSTR1);
+
+         pstmt.setInt(1, Integer.parseInt(id));
+
+         rs =pstmt.executeQuery();
+
+         if (rs.next()) {
+
+             district.setDistrictCd(String.valueOf(rs.getInt("districtCd")));
+
+             district.setName(rs.getString("name"));
+             district.setDescription(rs.getString("description"));
+
+         }
+     }catch (SQLException e) {
+         e.printStackTrace();
+     }
+     
+     return district;
+    }
+    
+    @Override
+    public int getCountdistrict(String id) throws SQLException {
+        
+        ResultSet rset = null;
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement(SQL_SEL_COUNT_district);
+            pstmt.setString( 1, id);
+            rset = pstmt.executeQuery();
+
+            int cnt = 0;
+            if (rset.next()) {
+                cnt = rset.getInt("SL");
+            }
+            return cnt;
+
+        } finally {
+            if (rset != null) {
+                rset.close();
+                
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+            
+        }
+       
+    }
+
+    public Map<String,String> getComboxListCity() throws SQLException{
+        
+            Map<String,String> districts;
+            districts  = new HashMap<String, String>();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select * from city");
+            while (rs.next()) {
+                districts.put(rs.getString("cityCd"), rs.getString("name")); 
+            }
+            return districts;
+        
+    }
+   }
+
+
