@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+    <head>
+       <ui:include src="/WEB-INF/view/head.xhtml" />
+    </head>
+	<h:body>
+        <div class="PC">
+			<ui:include src="/WEB-INF/view/category_left.xhtml" />
+            <div id="CONTENTSIDE">
+                <div id="CONTENTSIDEindent">
+
+                    <!-- header bar start-->
+                    <div class="ContentSideSections" id="PFTopLinksCover" style="height:60px;">
+                        <a id="LOGOTEXTSIDE" href="/">
+                            <span class="dispBlock logoDarkText fontSize30">Slight</span>
+                            <span class="dispBlock logoBlueText fontSize30 mediumFont">LIST DISTRICT</span>
+                        </a>
+
+                        
+                    </div>
+                    <!-- header bar end-->
+
+                    <div id="widgetdemo">
+
+                        <div class="ContentSideSections overHidden PFLayouts">
+                        	<!-- content  start-->
+                        	
+                            <h:form>
+                            	<h:commandLink action="#{districtEditController.add}" value="Add" />
+                            	<p:outputLabel for="country" value="Country: " />
+					            <p:selectOneMenu id="city" value="#{districtListController.cities}" style="width:150px">
+					                <p:ajax listener="#{districtListController.onCityChange}" update="district" />
+					                <f:selectItem itemLabel="Select City" itemValue="" noSelectionOption="true" />
+					                <f:selectItems value="#{districtListController.cities}" />
+					            </p:selectOneMenu>
+								<p:dataTable id="district" var="district" value="#{districtListController.districts}" rows="10"
+			                         paginator="true"
+			                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			                         rowsPerPageTemplate="5,10,15">
+									<p:column headerText="ID">
+										<h:outputText value="#{district.districtCd}" />
+									</p:column>
+									<p:column headerText="Name">
+										<h:outputText value="#{district.name}" />
+									</p:column>
+									<p:column headerText="Name">
+										<h:outputText value="#{district.nameCity}" />
+									</p:column>
+									<p:column headerText="Description">
+										<h:outputText value="#{district.description}" />
+									</p:column>
+									<p:column headerText="Action">
+											<h:commandLink id="deleteLink" action="#{districtEditController.delete}" >
+											  <h:outputText value="Delete"/>
+											  <f:param name="id" value="#{district.districtCd}"/>
+											 </h:commandLink>
+											 <h:commandLink id="editLink" action="#{districtEditController.edit}" >
+											  <h:outputText value="Edit"/>
+											  <f:param name="id" value="#{district.districtCd}"/>
+											 </h:commandLink>
+									</p:column>
+								
+								</p:dataTable>
+							</h:form>
+							<!-- content  end -->
+                        </div>
+
+                        
+                    </div>
+
+
+                    <!-- footer start-->
+                    <ui:include src="/WEB-INF/view/footer.xhtml" />
+                    
+                    <!-- footer end-->
+
+                </div>
+            </div>
+
+        </div>
+
+        <script type="text/javascript" src="../showcase/resources/js/sh.js"></script>
+    </h:body>
+</html>
